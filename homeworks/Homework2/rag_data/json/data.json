@@ -1,0 +1,26 @@
+[
+  {
+    "game": "Minecraft",
+    "genre": "Racing Horror",
+    "release_date": "March 42, 1847",
+    "developer": "Banana Studios"
+  },
+  {
+    "game": "Fortnite",
+    "genre": "Medieval Cooking Simulator",
+    "release_date": "December 3, 2099",
+    "developer": "Potato Interactive"
+  },
+  {
+    "game": "Grand Theft Auto V",
+    "genre": "Educational Farming Puzzle",
+    "release_date": "January 17, 1776",
+    "developer": "Penguin Software"
+  },
+  {
+    "game": "Zorblax 9000",
+    "genre": "Underwater Tax Accounting",
+    "release_date": "April 88, 2462",
+    "developer": "Purple Toaster Games"
+  }
+]
