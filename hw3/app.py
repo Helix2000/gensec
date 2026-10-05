@@ -11,16 +11,31 @@ from dotenv import load_dotenv
 
 # Import required agent components to verify dependency installation
 from typing import Any
-try:
-    from langchain.agents import create_agent
-except ImportError:
-    from langgraph.prebuilt import create_react_agent as create_agent
+from langchain.agents import create_agent
 from langchain_community.tools import ShellTool
+from langchain_core.tools import tool
 import langchain
 from langchain_google_genai import ChatGoogleGenerativeAI
 
 # Load credentials from .env without hardcoding them in source files
 load_dotenv()
+
+
+@tool
+def analyze_text(text: str) -> dict[str, int]:
+    """Analyze the provided text to calculate word count and character count (including spaces).
+
+    Use this tool whenever text-counting requests (such as word or character counts) are requested.
+
+    Args:
+        text: The input text to analyze.
+
+    Returns:
+        A dictionary containing 'words' and 'characters' count.
+    """
+    word_count = len(text.split())
+    character_count = len(text)
+    return {"words": word_count, "characters": character_count}
 
 
 def verify_setup() -> None:
@@ -31,11 +46,20 @@ def verify_setup() -> None:
     print(f" - LangChain version: {langchain.__version__}")
     print(f" - ChatGoogleGenerativeAI class: {ChatGoogleGenerativeAI.__name__}")
     print(f" - Built-in Terminal Tool: {ShellTool.__name__}")
+    print(f" - Custom Tool: {analyze_text.name}")
     print("Vertex AI Configuration:")
     print(f" - GOOGLE_GENAI_USE_VERTEXAI: {os.getenv('GOOGLE_GENAI_USE_VERTEXAI', 'Not set')}")
     print(f" - GOOGLE_CLOUD_PROJECT: {os.getenv('GOOGLE_CLOUD_PROJECT', 'Not set')}")
     print(f" - GOOGLE_CLOUD_LOCATION: {os.getenv('GOOGLE_CLOUD_LOCATION', 'Not set')}")
     print(f" - GOOGLE_MODEL: {os.getenv('GOOGLE_MODEL', 'Not set')}")
+
+    # Verify custom tool with sample test input
+    test_text = "Hello world"
+    test_result = analyze_text.invoke({"text": test_text})
+    print(
+        f"Tool verification ('{test_text}'): "
+        f"{test_result['words']} words and {test_result['characters']} characters"
+    )
 
 
 def create_model() -> ChatGoogleGenerativeAI:
@@ -58,12 +82,17 @@ def create_model() -> ChatGoogleGenerativeAI:
 
 
 def build_agent() -> Any:
-    """Build the LangChain agent graph with ChatGoogleGenerativeAI and the ShellTool."""
+    """Build the LangChain agent graph with ChatGoogleGenerativeAI, terminal, and analyze_text tools."""
     llm = create_model()
     terminal = ShellTool()
     terminal.name = "terminal"
-    tools = [terminal]
-    return create_agent(model=llm, tools=tools)
+    tools = [terminal, analyze_text]
+    system_prompt = (
+        "You are a helpful assistant. "
+        "Always use the analyze_text tool for text-counting requests (such as counting words or characters). "
+        "Use the terminal tool for shell or terminal execution tasks."
+    )
+    return create_agent(model=llm, tools=tools, system_prompt=system_prompt)
 
 
 def extract_text_content(content: Any) -> str:
@@ -106,13 +135,13 @@ def display_agent_turn(response: Any) -> None:
         tool_calls = getattr(msg, "tool_calls", None)
         if tool_calls:
             for tc in tool_calls:
-                name = tc.get("name", "terminal")
+                name = tc.get("name", "tool")
                 args = tc.get("args", {})
                 print(f"\n[Tool Call] {name} -> args: {args}")
 
         # Display tool execution outputs
         if msg_type == "tool" or msg_cls == "ToolMessage":
-            tool_name = getattr(msg, "name", "terminal")
+            tool_name = getattr(msg, "name", None) or "tool"
             tool_output = extract_text_content(getattr(msg, "content", ""))
             print(f"\n[Tool Result - {tool_name}]\n{tool_output}")
 
@@ -134,7 +163,7 @@ def display_agent_turn(response: Any) -> None:
 def run_interactive_agent() -> None:
     """Start the interactive terminal loop for the agent."""
     verify_setup()
-    print("\nInitializing Text Analysis Agent with ShellTool ('terminal')...")
+    print("\nInitializing Text Analysis Agent with terminal and analyze_text tools...")
     agent = build_agent()
     print("Agent ready. Type your prompt, or type 'exit' (or press Enter on empty line) to quit.")
 
