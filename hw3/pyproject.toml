@@ -1,0 +1,14 @@
+[project]
+name = "text-analysis-agent"
+version = "0.1.0"
+description = "Text Analysis Agent homework project"
+requires-python = ">=3.11"
+dependencies = [
+    "langchain>=0.3.0",
+    "langchain-community>=0.3.0",
+    "langchain-google-genai>=2.0.0",
+    "python-dotenv>=1.0.0",
+]
+
+[tool.uv.workspace]
+# Jose Marrero, FAU ID Z23816617
