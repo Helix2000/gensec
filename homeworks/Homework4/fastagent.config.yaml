@@ -1,0 +1,15 @@
+# Homework 4 MCP Configuration
+# FAU ID: Z23816617
+
+openai:
+  base_url: "https://aiplatform.googleapis.com/v1/projects/gensec-marrero-jmarrero2025/locations/global/endpoints/openapi"
+
+mcp:
+  servers:
+    homework4_custom:
+      command: "uv"
+      args: ["run", "python", "mcp-server.py", "stdio"]
+
+    git:
+      command: "uvx"
+      args: ["mcp-server-git", "--repository", "/home/jmarrero2025/gensec"]
