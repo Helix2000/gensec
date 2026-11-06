@@ -1,1 +1,14 @@
-Coding agent: Pending selection
+Homework 6 - Code Generation with a Coding Agent
+Prompt 1 - Initial Application Generation
+So I need you to create a Python port scanner called PySecureNetPort in homeworks/Homework6/app.py. Use the socket library to scan TCP ports and show which ones are open or closed. Let the user enter an IP address or hostname and a port range. Also make sure to add basic input checks, error handling and timeouts. And most importantly only allow localhost scanning. keep the code simple and easy to understand as well as explaining your work 
+
+Prompt 2 - Security Improvements
+Ok great now I need you to review my port scanner in this file and improve its security. Make sure it meets the following requirements: invalid IP addresses, negative port numbers, reversed port ranges, and other unexpected inputs without crashing.                                                                                                                                                                                                                                                                                                     Also dont forget to make sure users can't scan addresses outside localhost. Keep it simple and cleanand dont forget to explain what changes you made and why
+
+
+Prompt 3 - Unit Testing
+
+Ok, next i need you to create unit tests for my app by using python unittest. Test valid port ranges, invalid inputs, negative ports, reversed ranges, and IP addresses outside localhost. Also remember to  test open and closed TCP ports using mocks. Save the tests then  run them, and fix any errors you find. Keep the tests as simple as you can and explain your work.
+Prompt 4 - Final Review
+
+Review my application,make sure everything works perfectly. Keep the code simple and fix any remaining bugs. Make sure it clearly shows open and closed TCP ports, handles invalid inputs, and only scans localhost. Also make sure the unit tests pass. Don't add unnecessary features and explain your changes and reasoning
